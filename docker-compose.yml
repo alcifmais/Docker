@@ -8,12 +8,8 @@ services:
     environment:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgres
-    restart: always
   cachet:
-    build:
-      context: .
-      args:
-        - cachet_ver=2.4
+    image: cachet-upstatus-kuma:latest
     ports:
       - 8001:8000
     links:
@@ -33,4 +29,7 @@ services:
       - DEBUG=false
     depends_on:
       - postgres
-    restart: on-failure
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: on-failure
