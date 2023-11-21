@@ -65,7 +65,6 @@ pipeline {
 
                             def encodedTagImage = URLEncoder.encode(tagImage, 'UTF-8')
 
-
                             sh """
                                 tar -cvzf package.tar.gz *
                               """
@@ -102,7 +101,18 @@ pipeline {
 //   -H 'sec-ch-ua-mobile: ?0' \
 //   -H 'sec-ch-ua-platform: "Linux"' \
 //   --compressed
+                            def fileExists = fileExists('package.tar.gz')
 
+                            if (fileExists) {
+                                echo 'O arquivo package.tar.gz existe no diretório atual.'
+                            } else {
+                                echo 'O arquivo package.tar.gz não foi encontrado no diretório atual.'
+                            }
+
+                            def boolean fileExists(String filename) {
+                                def file = new File(filename)
+                                return file.exists()
+                            }
 
                            def erroString = sh(script: """
                               curl --request POST -k \
@@ -124,7 +134,7 @@ pipeline {
                                 error 'image não buildada no portainer.'
                             } else {
                                 echo "No 'errorDetail' found in the JSON string."
-                            }
+                             }
 
                         //     sh """
                         //    curl --request GET \
@@ -133,11 +143,11 @@ pipeline {
                         //     --header 'Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MiwidXNlcm5hbWUiOiJtam9yZGFuIiwicm9sZSI6MSwic2NvcGUiOiJkZWZhdWx0IiwiZm9yY2VDaGFuZ2VQYXNzd29yZCI6ZmFsc2UsImV4cCI6MTY5OTIxMzUyMSwiaWF0IjoxNjk5MTg0NzIxfQ.AtYnKi6IpI96X1QpSOXCJq-kBPyQF6AJDkU6NdqDsRs' \
                         //     --header 'Cache-Control: no-cache' | jq -r '.[] | select(.RepoTags | contains(["service-registration-check:latest"])).Id'
 
-                        //      """
-                        //
+                            //      """
+                            //
+                            }
                         }
                     }
-                }
 
                 stage('Derrubada de Serviços Existentes') {
             steps {
@@ -249,5 +259,5 @@ pipeline {
                         }
                     }
                 }
+                }
     }
-}
