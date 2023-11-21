@@ -87,7 +87,7 @@ pipeline {
                               --url '$urlPortainer/api/endpoints/$endpointIdPortainer/docker/build?dockerfile=Dockerfile&t=$encodedTagImage' \
                               --header 'Accept: application/json, text/plain, */*' \
                               --header 'Authorization: Bearer $jwt' \
-                              --header 'Content-Type: multipart/form-data' \
+                              --header 'Content-Type: application/gzip' \
                               --form dockerfile=@./package.tar.gz
                             """, returnStdout: true).trim()
 
