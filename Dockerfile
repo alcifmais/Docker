@@ -3,9 +3,9 @@ FROM nginx:1.17.8-alpine
 EXPOSE 8000
 CMD ["/sbin/entrypoint.sh"]
 
-ARG archive_url
+ARG archive_url=https://github.com/cachethq/Cachet/archive/2.4.tar.gz
 
-ENV cachet_ver cachet_ver=2.4
+ENV cachet_ver=2.4
 ENV archive_url ${archive_url:-https://github.com/cachethq/Cachet/archive/${cachet_ver}.tar.gz}
 
 ENV COMPOSER_VERSION 1.9.0
