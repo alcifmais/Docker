@@ -110,7 +110,7 @@ pipeline {
                               --header 'Accept: application/json, text/plain, */*' \
                               --header 'Authorization: Bearer $jwt' \
                               --header 'Content-Type: multipart/form-data' \
-                              --form dockerfile=@./package.tar.gz
+                              --form dockerfile=@./package.tar.gz \
                               --compressed
                             """, returnStdout: true).trim()
 
