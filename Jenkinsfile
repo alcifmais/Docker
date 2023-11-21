@@ -3,8 +3,6 @@ def fileExists(String filename) {
     return file.exists()
 }
 
-
-
 pipeline {
     agent any
 
@@ -24,36 +22,37 @@ pipeline {
                     steps {
                         sh 'apt-get update && apt-get install -y jq'
 
-                script {
-                            def urlPortainer = env.urlPortainer
-                            def userPortainer = env.userPortainer
-                            def passwordPortainer = env.passwordPortainer
+                        script {
+                                    def urlPortainer = env.urlPortainer
+                                    def userPortainer = env.userPortainer
+                                    def passwordPortainer = env.passwordPortainer
 
-                            def jwtToken = sh(script:  """
-                                curl --request POST -k --url $urlPortainer/api/auth \
-                                --header 'Content-Type: application/json' \
-                                --data '{ "password": "$passwordPortainer", "username": "$userPortainer" }' | jq -r '.jwt'
-                            """, returnStdout: true).trim()
+                                    def jwtToken = sh(script:  """
+                                        curl --request POST -k --url $urlPortainer/api/auth \
+                                        --header 'Content-Type: application/json' \
+                                        --data '{ "password": "$passwordPortainer", "username": "$userPortainer" }' | jq -r '.jwt'
+                                    """, returnStdout: true).trim()
 
-                            // Obtém o valor do token do JSON
-                            def jwt = jwtToken
+                                    // Obtém o valor do token do JSON
+                                    def jwt = jwtToken
 
-                            echo "Valor do JWT: $jwt"
+                                    echo "Valor do JWT: $jwt"
 
-                            if (jwt) {
-                        env.authPortainer = jwt
-                            } else {
-                        error 'API Authentication Failed'
-                            }
+                                    if (jwt) {
+                                env.authPortainer = jwt
+                                    } else {
+                                error 'API Authentication Failed'
+                                    }
 
-                            def gitUrl = sh(returnStdout: true, script: 'git config --get remote.origin.url').trim()
-                            echo "Git Repository URL: $gitUrl"
-                            // Extrair o nome do repositório do URL
-                            def gitRepoName = gitUrl.tokenize('/')[-1].replaceFirst(/\.git$/, '')
+                                    def gitUrl = sh(returnStdout: true, script: 'git config --get remote.origin.url').trim()
+                                    echo "Git Repository URL: $gitUrl"
+                                    // Extrair o nome do repositório do URL
+                                    def gitRepoName = gitUrl.tokenize('/')[-1].replaceFirst(/\.git$/, '')
 
-                            // Armazenar o nome do repositório em uma variável de ambiente
-                            env.gitRepoName = gitRepoName
-                }
+                                    // Armazenar o nome do repositório em uma variável de ambiente
+                                    env.gitRepoName = gitRepoName
+
+                        }
                     }
                 }
 
@@ -85,11 +84,6 @@ pipeline {
                                 echo 'O arquivo package.tar.gz não foi encontrado no diretório atual.'
                             }
 
-                            def boolean fileExists(String filename) {
-                                def file = new File(filename)
-                                return file.exists()
-                            }
-
                            def erroString = sh(script: """
                               curl --request POST -k \
                               --url '$urlPortainer/api/endpoints/$endpointIdPortainer/docker/build?dockerfile=Dockerfile&t=$encodedTagImage' \
@@ -112,15 +106,7 @@ pipeline {
                                 echo "No 'errorDetail' found in the JSON string."
                              }
 
-                        //     sh """
-                        //    curl --request GET \
-                        //     --url 'https://192.168.7.215:9443/api/endpoints/4/docker/images/json?all=0' \
-                        //     --header 'Accept: application/json, text/plain, */*' \
-                        //     --header 'Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MiwidXNlcm5hbWUiOiJtam9yZGFuIiwicm9sZSI6MSwic2NvcGUiOiJkZWZhdWx0IiwiZm9yY2VDaGFuZ2VQYXNzd29yZCI6ZmFsc2UsImV4cCI6MTY5OTIxMzUyMSwiaWF0IjoxNjk5MTg0NzIxfQ.AtYnKi6IpI96X1QpSOXCJq-kBPyQF6AJDkU6NdqDsRs' \
-                        //     --header 'Cache-Control: no-cache' | jq -r '.[] | select(.RepoTags | contains(["service-registration-check:latest"])).Id'
-
-                            //      """
-                            //
+                     
                             }
                         }
                     }
