@@ -91,7 +91,7 @@ pipeline {
                               --form dockerfile=@./package.tar.gz
                             """, returnStdout: true).trim()
 
-                            def pattern = /"errorDetail":\s*\{/
+                            def pattern = /"errorDetail\s*\{/
                             def hasErrorDetail = erroString =~ pattern
 
                             print(erroString)
