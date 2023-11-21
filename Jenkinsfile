@@ -65,6 +65,12 @@ pipeline {
 
                             def encodedTagImage = URLEncoder.encode(tagImage, 'UTF-8')
 
+
+                            sh """
+                                tar -cvzf package.tar.gz *
+                              """
+                            sleep 5
+
                             // sh """curl --request POST -k \
                             //   --url '$urlPortainer/api/endpoints/$endpointIdPortainer/docker/build?dockerfile=Dockerfile&t=$encodedTagImage' \
                             //   --header 'Accept: application/json, text/plain, */*' \
@@ -82,7 +88,7 @@ pipeline {
                               --header 'Accept: application/json, text/plain, */*' \
                               --header 'Authorization: Bearer $jwt' \
                               --header 'Content-Type: multipart/form-data' \
-                              --form dockerfile=@./Dockerfile
+                              --form dockerfile=@./package.tar.gz
                             """, returnStdout: true).trim()
 
                             def pattern = /"errorDetail":\s*\{/
