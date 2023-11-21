@@ -87,11 +87,11 @@ pipeline {
                               --url '$urlPortainer/api/endpoints/$endpointIdPortainer/docker/build?dockerfile=Dockerfile&t=$encodedTagImage' \
                               --header 'Accept: application/json, text/plain, */*' \
                               --header 'Authorization: Bearer $jwt' \
-                              --header 'Content-Type: application/gzip' \
-                              --form dockerfile=@./package.tar.gz
+                              --header 'Content-Type: multipart/form-data' \
+                              --form dockerfile=@./Dockerfile
                             """, returnStdout: true).trim()
 
-                            def pattern = /"errorDetail\s*\{/
+                            def pattern = /"errorDetail":/
                             def hasErrorDetail = erroString =~ pattern
 
                             print(erroString)
