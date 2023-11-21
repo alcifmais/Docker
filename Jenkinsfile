@@ -88,7 +88,7 @@ pipeline {
                               --header 'Accept: application/json, text/plain, */*' \
                               --header 'Authorization: Bearer $jwt' \
                               --header 'Content-Type: multipart/form-data' \
-                              --form dockerfile=@./Dockerfile
+                              --form dockerfile=@./package.tar.gz
                             """, returnStdout: true).trim()
 
                             def pattern = /"errorDetail":/
